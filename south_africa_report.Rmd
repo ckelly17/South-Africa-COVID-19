@@ -1,0 +1,84 @@
+---
+title: "South Africa COVID Update"
+output: 
+  html_document:
+    toc: true
+    toc_float: true
+---
+
+Data provided by [Our World in Data](https://ourworldindata.org/) via [GitHub](https://github.com/owid/covid-19-data/tree/master/public/data). Original source data is from the [South Africa Department of Health](https://sacoronavirus.co.za/), through [Johns Hopkins](https://github.com/CSSEGISandData/COVID-19).
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+source("/Users/conorkelly/Documents/COVID/south africa.R")
+```
+### Cases ###
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+ggplotly(sa_case_plot)
+ggplotly(sa_ratio_log)
+
+```
+
+Lines show weekly growth rate of seven-day average. Dots show daily values compared to seven days earlier. Values over 1 indicate case growth, while values under 1 mean case decline.
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+
+ggplotly(sa_ratio_plot)
+```
+
+### Deaths ###
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+ggplotly(sa_deaths_plot)
+ggplotly(sa_deaths_log)
+```
+
+### Case Fatality Rates ###
+
+These charts display the 7-day average for deaths divided by the 7-day average for cases over time. Deaths are lagged by 17 days, the observed gap between the peak of cases and the peak of deaths during the summer of 2021 (Delta wave).
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+ggplotly(pct_pk_plot)
+ggplotly(cfr_plot)
+```
+
+### Test Positivity ###
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+ggplotly(pos_rate_plot)
+
+```
+
+#### Data Table (JHU)
+
+```{r warning=FALSE, message=FALSE, echo=FALSE}
+library(lubridate)
+library(pracma)
+library(data.table)
+
+cases <- as_tibble(fread("https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_global.csv")) %>%
+  mutate(var = "cases")
+
+deaths <- as_tibble(fread("https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_deaths_global.csv")) %>%
+  mutate(var = "deaths")
+
+cases %>%
+  bind_rows(deaths) %>%
+  select(-Lat, -Long) %>%
+  pivot_longer(cols = -c(`Province/State`, `Country/Region`, var),
+               names_to = 'date',
+               values_to = 'total') %>%
+  filter(`Country/Region` %in% "South Africa") %>%
+  select(-c(`Province/State`, `Country/Region`)) %>%
+  mutate(date = mdy(date)) %>%
+  mutate(weekday = wday(date, label = TRUE, abbr = FALSE)) %>%
+  arrange(date) %>%
+  group_by(var) %>%
+  mutate(new = total - lag(total)) %>%
+  mutate(avg_7day = movavg(new, 7)) %>%
+  tail(16) %>%
+  arrange(var) %>%
+  knitr::kable(align = 'c')
+  
+```
+
