@@ -10,9 +10,6 @@ Cases, deaths, and testing data provided by [Our World in Data](https://ourworld
 
 I display data since the beginning of 2021. My processing and analysis code can be found [here](https://github.com/ckelly17/South-Africa-COVID-19). Many thanks to all who have made this data available.
 
-```{r, echo=FALSE, warning=FALSE, message=FALSE}
-source("/Users/conorkelly/Documents/COVID/south africa.R")
-```
 ## Cases
 
 ```{r, echo=FALSE, warning=FALSE, message=FALSE}
@@ -183,7 +180,7 @@ cases %>%
   filter(`Country/Region` %in% "South Africa") %>%
   select(-c(`Province/State`, `Country/Region`)) %>%
   mutate(date = mdy(date)) %>%
-  mutate(weekday = wday(date, label = TRUE, abbr = FALSE)) %>%
+  mutate(weekday = lubridate::wday(date, label = TRUE, abbr = FALSE)) %>%
   arrange(date) %>%
   group_by(var) %>%
   mutate(new = total - lag(total)) %>%
