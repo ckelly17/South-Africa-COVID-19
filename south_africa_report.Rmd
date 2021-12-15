@@ -6,14 +6,47 @@ output:
     toc_float: true
 ---
 
-Cases, deaths, and testing data provided by [Our World in Data](https://ourworldindata.org/) on [GitHub](https://github.com/owid/covid-19-data/tree/master/public/data) via [Johns Hopkins](https://github.com/CSSEGISandData/COVID-19) and [South Africa Department of Health](https://sacoronavirus.co.za/). Hospitalization data from the Data Science for Social Impact Research Group @ University of Pretoria, *Coronavirus COVID-19 (2019-nCoV) Data Repository for South Africa*. Available on: https://github.com/dsfsi/covid19za.
+Nearly all data shown here is from the [South Africa National Institue for Communicable Diseases](https://www.nicd.ac.za/) (NICD), but it is accessed through different channels. Cases, deaths, and testing data are retrieved from [Our World in Data](https://ourworldindata.org/) on [GitHub](https://github.com/owid/covid-19-data/tree/master/public/data) via [Johns Hopkins](https://github.com/CSSEGISandData/COVID-19) and [NICD](https://sacoronavirus.co.za/). Hospitalization data and provincial data are retrieved from from the Data Science for Social Impact Research Group @ University of Pretoria, *Coronavirus COVID-19 (2019-nCoV) Data Repository for South Africa*. Available on: https://github.com/dsfsi/covid19za. Many thanks to all who have worked to collect this data and make it publicly accessible.
 
-I display data since the beginning of 2021. My processing and analysis code can be found [here](https://github.com/ckelly17/South-Africa-COVID-19). Many thanks to all who have made this data available.
+I display data since the beginning of 2021. Dashed lines indicate the date (Nov 25, 2021) when the Omicron variant was announced by NICD. My processing and analysis code can be found [here](https://github.com/ckelly17/South-Africa-COVID-19). 
+
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+# 
+# Data <- c("South Africa Daily Cases, Deaths, Tests, Percent Positive",
+#           "Provincial Testing, Cases, Deaths",
+#           "Hospitalizations")
+# DataSource <- c("National Institue for Communicable Diseases", 
+#                 "NICD", 
+#                 "NICD Hospital Surveillance")
+# AccessedVia <- c("Our World in Data", 
+#                  "Data Science for Social Impact Research Group", 
+#                  "Data Science for Social Impact Research Group")
+# 
+# links <- c("https://github.com/owid/covid-19-data/tree/master/public/data",
+#           "https://github.com/dsfsi/covid19za/blob/master/data/covid19za_provincial_raw_hospitalization.csv",
+#           "https://raw.githubusercontent.com/dsfsi/covid19za/master/data/covid19za_provincial_timeline_testing_positivityrate.csv")
+# 
+# urls <- rep("https://stackoverflow.com/", 10)
+# # use paste0 to compose markdown-formatted hyperlinks
+# 
+# 
+# 
+# df <- data.frame(Data, DataSource, AccessedVia)
+# df$AccessedVia <- paste0("[", df$AccessedVia, "](", links, ")")
+# 
+# 
+# df %>% knitr::kable(format = "simple")
+
+```
+
+
+
 
 ## Cases
 
 ```{r, echo=FALSE, warning=FALSE, message=FALSE}
-ggplotly(sa_case_plot) %>%
+ggplotly(sa_case_plot, height = 800) %>%
   layout(
     title = paste(
       '<b>COVID-19 Cases in South Africa</b>',
@@ -22,7 +55,8 @@ ggplotly(sa_case_plot) %>%
     ),
     margin = list(t = 100)
   )
-ggplotly(sa_ratio_log) %>%
+
+ggplotly(sa_ratio_log, height = 800) %>%
   layout(
     title = paste(
       '<b>COVID-19 Cases in South Africa (Log Scale)</b>',
@@ -38,7 +72,7 @@ The line chart below shows the weekly growth multiplier of seven-day average cas
 
 ```{r, echo=FALSE, warning=FALSE, message=FALSE}
 
-ggplotly(sa_ratio_plot) %>%
+ggplotly(sa_ratio_plot, height = 800) %>%
   layout(
     title = paste(
       '<b>Week-Over-Week Case Multiplier</b>',
@@ -52,7 +86,7 @@ ggplotly(sa_ratio_plot) %>%
 ## Deaths
 
 ```{r, echo=FALSE, warning=FALSE, message=FALSE}
-ggplotly(sa_deaths_plot) %>%
+ggplotly(sa_deaths_plot, height = 800) %>%
   layout(
     title = paste(
       '<b>Reported COVID-19 Deaths in South Africa</b>',
@@ -61,7 +95,7 @@ ggplotly(sa_deaths_plot) %>%
     ),
     margin = list(t = 100)
   )
-ggplotly(sa_deaths_log) %>%
+ggplotly(sa_deaths_log, height = 800) %>%
   layout(
     title = paste(
       '<b>Reported COVID-19 Deaths in South Africa (Log Scale)</b>',
@@ -73,12 +107,12 @@ ggplotly(sa_deaths_log) %>%
 ```
 
 **Percentage of peak values**
-This charts display the 7-day average for deaths (black) and cases (orange) over time, expressed as the percentage of the all-time high values reached in summer 2021. Deaths are lagged by 17 days, the observed gap between the peak of cases and the peak of deaths during the summer of 2021 (Delta wave). It is designed to explore differences in disease severity over time.
+This charts display the 7-day average for deaths (black) and cases (orange) over time, expressed as the percentage of the all-time high values reached in summer 2021. Deaths are lagged by 17 days, the observed gap between the peak of cases and the peak of deaths for South Africa as a whole during the summer of 2021 (Delta wave). It is designed to explore differences in disease severity over time.
 
 ```{r, echo=FALSE, warning=FALSE, message=FALSE}
-ggplotly(pct_pk_plot) %>%
+ggplotly(pct_pk_plot, height = 800) %>%
   layout(legend = list(orientation = "h", x =0.25, y = .97),
-         title = paste('<b>Relationship Betwewen COVID-19 Cases and Deaths</b>',
+         title = paste('<b>Relationship Between COVID-19 Cases and Deaths</b>',
                        '<br><span style="font-size: 12px;">',
                        'Cases and deaths shown as percentage of their peak from July 2021. Deaths lagged 17 days.'),
     margin = list(t = 100)
@@ -90,7 +124,7 @@ This chart displays the 7-day average for deaths (lagged 17 days) divided by the
 
 
 ```{r, echo=FALSE, warning=FALSE, message=FALSE}
-ggplotly(cfr_plot) %>%
+ggplotly(cfr_plot, height = 800) %>%
   layout(title = paste('<b>Estimated Case Fatality Rate </b>',
                        '<br><span style="font-size: 12px;">',
                        'New deaths (7-day average) divided by new cases (7-day average) 17 days earlier'),
@@ -98,6 +132,8 @@ ggplotly(cfr_plot) %>%
 ```
 
 ## Testing and Positivity 
+
+Positive rate reflects the 7-day average for new reported cases divided by the 7-day average for new reported tests. When data from JHU/Our World in Data lags reported data, I instead use figures from Data Science for Social Impact Research Group @ University of Pretoria via [GitHub](https://github.com/owid/covid-19-data/tree/master/public/data) that include data from NICD press releases. Provincial weekly positive rates are also from here.
 
 ```{r, echo=FALSE, warning=FALSE, message=FALSE}
 ggplotly(pos_rate_plot) %>%
@@ -109,10 +145,18 @@ ggplotly(pos_rate_plot) %>%
     ),
     margin = list(t = 100)
   )
-
+ggplotly(reg_pp_plot) %>%
+  layout(
+    title = paste(
+      '<b>Weekly Positivity Rates</b>',
+      '<br><span style="font-size: 12px;">',
+      'South Africa and Gauteng Province'
+    ),
+    margin = list(t = 100)
+  )
 ```
 ## Hospitals
-Data from Data Science for Social Impact Research Group @ University of Pretoria via [GitHub](https://github.com/dsfsi/covid19za/blob/master/data/covid19za_provincial_raw_hospitalization.csv). Presented first for South Africa as a whole and then for Gauteng Province specifically. Dashed lines indicate the date (Nov 25, 2021) when the Omicron variant was announced by the South Africa National Institute for Communicable Diseases.
+Data from Data Science for Social Impact Research Group @ University of Pretoria via [GitHub](https://github.com/dsfsi/covid19za/blob/master/data/covid19za_provincial_raw_hospitalization.csv). Presented first for South Africa as a whole and then for Gauteng Province specifically. 
 
 
 ```{r, echo=FALSE, warning=FALSE, message=FALSE}
@@ -133,16 +177,16 @@ ggplotly(gt_hosp) %>%
 ```
 
 **Percentage of Peak Values** 
-Case and hospitalization metrics (seven-day averages) over time as percentage of peak values. No lags are applied. The gray area chart shows the progression of cases over time, while the lines show hospitalization metrics.
+Case and hospitalization metrics (seven-day averages) over time as percentage of peak values for South Africa. No lags are applied. The gray area chart shows the progression of cases over time, while the lines show hospitalization metrics.
 
 ```{r, echo=FALSE, warning=FALSE, message=FALSE}
-ggplotly(pct_hosp_plot) %>%
-  layout(legend = list(orientation = "h", x =0.15, y = 1.05)) %>%
+ggplotly(pct_hosp_plot, height = 800) %>%
+  layout(legend = list(orientation = "h", x =0.15, y = .99)) %>%
   layout(
     title = paste(
       '<b>Relationship Between Cases and Hospitalizations</b>',
       '<br><span style="font-size: 12px;">',
-      'New cases and current COVID-19 hospitalizations (all, ICU, ventilated) shown as percentage of peak values'
+      'National new cases and current COVID-19 hospitalizations (all, ICU, ventilated) as percentage of peak values'
     ),
     margin = list(t = 100))
 
